@@ -8,6 +8,8 @@ import (
 type Builder struct {
 	ConfigMaps              []BuilderConfigMap
 	DeploymentOrStatefulset []BuilderDeploymentStatefulSet
+	StorageConfig           []BuilderStorageConfig
+	ConfigHash              []BuilderConfigMapHash
 }
 
 type CommonBuilder struct {

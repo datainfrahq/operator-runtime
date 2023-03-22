@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,6 +26,7 @@ func (b CommonBuilder) CreateOrUpdate() (controllerutil.OperationResult, error) 
 			}
 			return result, nil
 		} else {
+			fmt.Println("Delete")
 			return "", err
 		}
 	} else {
