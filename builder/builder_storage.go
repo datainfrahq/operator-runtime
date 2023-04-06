@@ -29,7 +29,7 @@ func (s *Builder) BuildPvc() (controllerutil.OperationResult, error) {
 		storage.DesiredState = cm
 		storage.CurrentState = &v1.PersistentVolumeClaim{}
 
-		_, err = storage.CreateOrUpdate()
+		_, err = storage.CreateOrUpdate(s.Context.Context, s.Recorder)
 		if err != nil {
 			return controllerutil.OperationResultNone, nil
 		}

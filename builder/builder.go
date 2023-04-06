@@ -10,6 +10,8 @@ type Builder struct {
 	DeploymentOrStatefulset []BuilderDeploymentStatefulSet
 	StorageConfig           []BuilderStorageConfig
 	ConfigHash              []BuilderConfigMapHash
+	Recorder                BuilderRecorder
+	Context                 BuilderContext
 }
 
 type CommonBuilder struct {
@@ -23,7 +25,7 @@ type CommonBuilder struct {
 
 type ToBuilder func(opts *Builder)
 
-func NewBuilder(opts ...ToBuilder) *Builder {
+func NewBuilder(opts ...ToBuilder) BuilderInterface {
 	builder := &Builder{}
 	for _, opt := range opts {
 		opt(builder)

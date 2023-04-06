@@ -15,7 +15,7 @@ type BuilderDeploymentStatefulSet struct {
 	CommonBuilder
 }
 
-func ToNewDeploymentStatefulSetBuilder(builder []BuilderDeploymentStatefulSet) func(*Builder) {
+func ToNewBuilderDeploymentStatefulSet(builder []BuilderDeploymentStatefulSet) func(*Builder) {
 	return func(s *Builder) {
 		s.DeploymentOrStatefulset = builder
 	}
@@ -109,7 +109,7 @@ func (s *Builder) BuildDeployment(cmhashes []HashHolder) (controllerutil.Operati
 		deploy.DesiredState = deployment
 		deploy.CurrentState = &appsv1.Deployment{}
 
-		_, err = deploy.CreateOrUpdate()
+		_, err = deploy.CreateOrUpdate(s.Context.Context, s.Recorder)
 		if err != nil {
 			return controllerutil.OperationResultNone, err
 		}
@@ -128,7 +128,7 @@ func (s *Builder) BuildStatefulset(cmhashes []HashHolder) (controllerutil.Operat
 		statefulset.DesiredState = sts
 		statefulset.CurrentState = &appsv1.StatefulSet{}
 
-		_, err = statefulset.CreateOrUpdate()
+		_, err = statefulset.CreateOrUpdate(s.Context.Context, s.Recorder)
 		if err != nil {
 			return controllerutil.OperationResultNone, err
 		}

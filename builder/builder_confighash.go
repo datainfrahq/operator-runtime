@@ -13,7 +13,7 @@ type HashHolder struct {
 	HashVaule string
 }
 
-func ToNewConfigMapHashBuilder(builder []BuilderConfigMapHash) func(*Builder) {
+func ToNewBuilderConfigMapHash(builder []BuilderConfigMapHash) func(*Builder) {
 	return func(s *Builder) {
 		s.ConfigHash = builder
 	}

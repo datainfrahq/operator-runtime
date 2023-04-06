@@ -11,7 +11,7 @@ type BuilderConfigMap struct {
 	CommonBuilder
 }
 
-func ToNewConfigMapBuilder(builder []BuilderConfigMap) func(*Builder) {
+func ToNewBuilderConfigMap(builder []BuilderConfigMap) func(*Builder) {
 	return func(s *Builder) {
 		s.ConfigMaps = builder
 	}
@@ -29,7 +29,7 @@ func (s *Builder) BuildConfigMap() (controllerutil.OperationResult, error) {
 		configMap.DesiredState = cm
 		configMap.CurrentState = &v1.ConfigMap{}
 
-		_, err = configMap.CreateOrUpdate()
+		_, err = configMap.CreateOrUpdate(s.Context.Context, s.Recorder)
 		if err != nil {
 			return controllerutil.OperationResultNone, nil
 		}
