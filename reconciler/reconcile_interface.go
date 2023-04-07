@@ -1,4 +1,4 @@
-package builder
+package reconciler
 
 import (
 	"github.com/parseablehq/parseable-operator/pkg/operator-builder/builder"
