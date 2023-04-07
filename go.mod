@@ -1,4 +1,4 @@
-module github.com/datainfrahq/denali
+module github.com/datainfrahq/operator-builder
 
 go 1.19
 
