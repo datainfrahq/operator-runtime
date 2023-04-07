@@ -17,7 +17,7 @@ func ToNewBuilderStorageConfig(builder []BuilderStorageConfig) func(*Builder) {
 	}
 }
 
-func (s *Builder) BuildPvc() (controllerutil.OperationResult, error) {
+func (s *Builder) ReconcileStorage() (controllerutil.OperationResult, error) {
 
 	for _, storage := range s.StorageConfig {
 

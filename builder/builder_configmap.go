@@ -17,7 +17,7 @@ func ToNewBuilderConfigMap(builder []BuilderConfigMap) func(*Builder) {
 	}
 }
 
-func (s *Builder) BuildConfigMap() (controllerutil.OperationResult, error) {
+func (s *Builder) ReconcileConfigMap() (controllerutil.OperationResult, error) {
 
 	var result controllerutil.OperationResult
 

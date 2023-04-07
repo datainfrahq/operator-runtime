@@ -19,7 +19,7 @@ func ToNewBuilderConfigMapHash(builder []BuilderConfigMapHash) func(*Builder) {
 	}
 }
 
-func (s *Builder) BuildConfigMapHash() ([]HashHolder, error) {
+func (s *Builder) ReconcileConfigMapHash() ([]HashHolder, error) {
 	hashHolder := []HashHolder{}
 
 	for _, obj := range s.ConfigHash {

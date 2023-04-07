@@ -18,7 +18,7 @@ func ToNewBuilderService(builder BuilderService) func(*Builder) {
 	}
 }
 
-func (s *Builder) BuildService() (controllerutil.OperationResult, error) {
+func (s *Builder) ReconcileService() (controllerutil.OperationResult, error) {
 
 	svc := s.Service.makeService()
 

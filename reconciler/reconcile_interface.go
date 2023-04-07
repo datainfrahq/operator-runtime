@@ -1,7 +1,7 @@
 package reconciler
 
 import (
-	"github.com/parseablehq/parseable-operator/pkg/operator-builder/builder"
+	"github.com/datainfrahq/denali/builder"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 

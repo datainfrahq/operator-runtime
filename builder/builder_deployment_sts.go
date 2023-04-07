@@ -80,7 +80,7 @@ func (b BuilderDeploymentStatefulSet) MakeStatefulSet(cmhashes []HashHolder) (*a
 	}, nil
 }
 
-func (s *Builder) BuildDeployOrSts(cmHashes []HashHolder) (controllerutil.OperationResult, error) {
+func (s *Builder) ReconcileDeployOrSts(cmHashes []HashHolder) (controllerutil.OperationResult, error) {
 
 	for _, deployorsts := range s.DeploymentOrStatefulset {
 		if deployorsts.Kind == "Deployment" {

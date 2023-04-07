@@ -27,7 +27,7 @@ type CommonBuilder struct {
 
 type ToBuilder func(opts *Builder)
 
-func NewBuilder(opts ...ToBuilder) BuilderInterface {
+func NewBuilder(opts ...ToBuilder) *Builder {
 	builder := &Builder{}
 	for _, opt := range opts {
 		opt(builder)
