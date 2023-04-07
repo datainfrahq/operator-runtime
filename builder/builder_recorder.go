@@ -29,13 +29,13 @@ const (
 func (b BuilderRecorder) createEvent(crObj client.Object, obj client.Object, err error) {
 	if err != nil {
 		b.Recorder.Event(
-			obj,
+			crObj,
 			v1.EventTypeWarning,
 			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
 			b.ControllerName+"CreateObjectFail")
 	} else {
 		b.Recorder.Event(
-			obj,
+			crObj,
 			v1.EventTypeNormal,
 			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
 			b.ControllerName+"CreateObjectSuccess")
@@ -45,13 +45,13 @@ func (b BuilderRecorder) createEvent(crObj client.Object, obj client.Object, err
 func (b BuilderRecorder) updateEvent(crObj client.Object, obj client.Object, err error) {
 	if err != nil {
 		b.Recorder.Event(
-			obj,
+			crObj,
 			v1.EventTypeWarning,
 			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
 			b.ControllerName+"UpdateObjectFail")
 	} else {
 		b.Recorder.Event(
-			obj,
+			crObj,
 			v1.EventTypeNormal,
 			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
 			b.ControllerName+"UpdateObjectSuccess")

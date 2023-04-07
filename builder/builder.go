@@ -10,6 +10,7 @@ type Builder struct {
 	DeploymentOrStatefulset []BuilderDeploymentStatefulSet
 	StorageConfig           []BuilderStorageConfig
 	ConfigHash              []BuilderConfigMapHash
+	Service                 BuilderService
 	Recorder                BuilderRecorder
 	Context                 BuilderContext
 }
@@ -21,6 +22,7 @@ type CommonBuilder struct {
 	CrObject     client.Object
 	DesiredState client.Object
 	CurrentState client.Object
+	Labels       map[string]string
 }
 
 type ToBuilder func(opts *Builder)

@@ -10,4 +10,5 @@ type BuilderInterface interface {
 	BuildDeployment(cmhashes []HashHolder) (controllerutil.OperationResult, error)
 	BuildPvc() (controllerutil.OperationResult, error)
 	BuildStatefulset(cmhashes []HashHolder) (controllerutil.OperationResult, error)
+	BuildService() (controllerutil.OperationResult, error)
 }

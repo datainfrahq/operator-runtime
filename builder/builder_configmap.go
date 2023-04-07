@@ -19,9 +19,11 @@ func ToNewBuilderConfigMap(builder []BuilderConfigMap) func(*Builder) {
 
 func (s *Builder) BuildConfigMap() (controllerutil.OperationResult, error) {
 
+	var result controllerutil.OperationResult
+
 	for _, configMap := range s.ConfigMaps {
 
-		cm, err := configMap.MakeConfigMap()
+		cm, err := configMap.makeConfigMap()
 		if err != nil {
 			return controllerutil.OperationResultNone, err
 		}
@@ -29,17 +31,17 @@ func (s *Builder) BuildConfigMap() (controllerutil.OperationResult, error) {
 		configMap.DesiredState = cm
 		configMap.CurrentState = &v1.ConfigMap{}
 
-		_, err = configMap.CreateOrUpdate(s.Context.Context, s.Recorder)
+		result, err = configMap.CreateOrUpdate(s.Context.Context, s.Recorder)
 		if err != nil {
 			return controllerutil.OperationResultNone, nil
 		}
 
 	}
 
-	return controllerutil.OperationResultNone, nil
+	return result, nil
 }
 
-func (b BuilderConfigMap) MakeConfigMap() (*v1.ConfigMap, error) {
+func (b BuilderConfigMap) makeConfigMap() (*v1.ConfigMap, error) {
 	return &v1.ConfigMap{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "v1",
