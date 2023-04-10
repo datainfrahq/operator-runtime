@@ -37,7 +37,7 @@ Using this library we introduce standardisation across
 ```
 - The library makes configmap hashes and passes them as env to deployment and sts objects, which force trigger rollout of pods when the intenral k8s client updates objects.
 
-### Reoncile Objects
+### Reconcile Objects
 - once builder is constructed, the ```ReconcileInterface``` can be called in the build and reoncile objects
 ```
   // reconcile configmap
