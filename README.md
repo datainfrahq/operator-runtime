@@ -1,6 +1,7 @@
 # Operator-Builder
 
-![Build Status](https://github.com/datainfrahq/operator-builder/actions/workflows/go.yml/badge.svg)
+![Build Status](https://github.com/datainfrahq/operator-builder/actions/workflows/go.yml/badge.svg) [![Slack](https://img.shields.io/badge/slack-brightgreen.svg?logo=slack&label=Community&style=flat&color=%2373DC8C&)](https://launchpass.com/datainfra-workspace)
+
 
 ## Introduction
 - Operator builder is a library to build kubernetes operators which adhere to [dsoi-spec](https://github.com/datainfrahq/dsoi-spec).
