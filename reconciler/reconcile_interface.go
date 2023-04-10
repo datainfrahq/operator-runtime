@@ -1,7 +1,7 @@
 package reconciler
 
 import (
-	"github.com/datainfrahq/operator-builder/builder"
+	"github.com/parseablehq/parseable-operator/pkg/operator-builder/builder"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
@@ -12,6 +12,7 @@ type ReconcileInterface interface {
 	ReconcileDeployOrSts(cmHashes []builder.HashHolder) (controllerutil.OperationResult, error)
 	ReconcileStorage() (controllerutil.OperationResult, error)
 	ReconcileService() (controllerutil.OperationResult, error)
+	ReconcileStore() error
 }
 
 var Reconciler ReconcileInterface = builder.NewBuilder()

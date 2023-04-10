@@ -14,7 +14,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (b CommonBuilder) CreateOrUpdate(ctx context.Context, buildRecorder BuilderRecorder) (controllerutil.OperationResult, error) {
+func (b *CommonBuilder) CreateOrUpdate(ctx context.Context, buildRecorder BuilderRecorder) (controllerutil.OperationResult, error) {
 	addOwnerRefToObject(b.DesiredState, b.OwnerRef)
 	addHashToObject(b.DesiredState, b.OwnerRef.Kind+"OperatorHash")
 	if err := b.Client.Get(ctx, types.NamespacedName{Name: b.DesiredState.GetName(), Namespace: b.DesiredState.GetNamespace()}, b.CurrentState); err != nil {

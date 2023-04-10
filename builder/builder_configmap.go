@@ -28,6 +28,8 @@ func (s *Builder) ReconcileConfigMap() (controllerutil.OperationResult, error) {
 			return controllerutil.OperationResultNone, err
 		}
 
+		s.Put(cm.GetName(), cm.Kind)
+
 		configMap.DesiredState = cm
 		configMap.CurrentState = &v1.ConfigMap{}
 
@@ -41,7 +43,7 @@ func (s *Builder) ReconcileConfigMap() (controllerutil.OperationResult, error) {
 	return result, nil
 }
 
-func (b BuilderConfigMap) makeConfigMap() (*v1.ConfigMap, error) {
+func (b *BuilderConfigMap) makeConfigMap() (*v1.ConfigMap, error) {
 	return &v1.ConfigMap{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "v1",

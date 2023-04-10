@@ -21,14 +21,36 @@ func ToNewBuilderDeploymentStatefulSet(builder []BuilderDeploymentStatefulSet) f
 	}
 }
 
-func (b BuilderDeploymentStatefulSet) MakeDeployment(cmhashes []HashHolder) (*appsv1.Deployment, error) {
+func (s *Builder) ReconcileDeployOrSts(cmHashes []HashHolder) (controllerutil.OperationResult, error) {
+
+	for _, deployorsts := range s.DeploymentOrStatefulset {
+		if deployorsts.Kind == "Deployment" {
+			_, err := s.buildDeployment(cmHashes)
+			if err != nil {
+				return controllerutil.OperationResultNone, err
+			}
+		} else if deployorsts.Kind == "Statefulset" {
+			_, err := s.buildStatefulset(cmHashes)
+			if err != nil {
+				return controllerutil.OperationResultNone, err
+			}
+		}
+	}
+	return controllerutil.OperationResultNone, nil
+}
+
+func (b BuilderDeploymentStatefulSet) makeDeployment(cmhashes []HashHolder) (*appsv1.Deployment, error) {
 
 	var podSpec v1.PodSpec
 
 	podSpec = *b.PodSpec
 
-	for i, cmhash := range cmhashes {
-		podSpec.Containers[i].Env = append(podSpec.Containers[i].Env, v1.EnvVar{Name: cmhash.Name, Value: cmhash.HashVaule})
+	if cmhashes != nil {
+		for i := 0; i == len(podSpec.Containers); i++ {
+			for _, cmhash := range cmhashes {
+				podSpec.Containers[i].Env = append(podSpec.Containers[i].Env, v1.EnvVar{Name: cmhash.Name, Value: cmhash.HashVaule})
+			}
+		}
 	}
 
 	return &appsv1.Deployment{
@@ -58,8 +80,12 @@ func (b BuilderDeploymentStatefulSet) MakeStatefulSet(cmhashes []HashHolder) (*a
 
 	podSpec = *b.PodSpec
 
-	for i, cmhash := range cmhashes {
-		podSpec.Containers[i].Env = append(podSpec.Containers[i].Env, v1.EnvVar{Name: cmhash.Name, Value: cmhash.HashVaule})
+	if cmhashes != nil {
+		for i := 0; i == len(podSpec.Containers); i++ {
+			for _, cmhash := range cmhashes {
+				podSpec.Containers[i].Env = append(podSpec.Containers[i].Env, v1.EnvVar{Name: cmhash.Name, Value: cmhash.HashVaule})
+			}
+		}
 	}
 
 	return &appsv1.StatefulSet{
@@ -75,36 +101,23 @@ func (b BuilderDeploymentStatefulSet) MakeStatefulSet(cmhashes []HashHolder) (*a
 			},
 			Template: v1.PodTemplateSpec{
 				Spec: *b.PodSpec,
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: b.Labels,
+				},
 			},
 		},
 	}, nil
 }
 
-func (s *Builder) ReconcileDeployOrSts(cmHashes []HashHolder) (controllerutil.OperationResult, error) {
-
-	for _, deployorsts := range s.DeploymentOrStatefulset {
-		if deployorsts.Kind == "Deployment" {
-			_, err := s.BuildDeployment(cmHashes)
-			if err != nil {
-				return controllerutil.OperationResultNone, err
-			}
-		} else if deployorsts.Kind == "Statefulset" {
-			_, err := s.BuildStatefulset(cmHashes)
-			if err != nil {
-				return controllerutil.OperationResultNone, err
-			}
-		}
-	}
-	return controllerutil.OperationResultNone, nil
-}
-
-func (s *Builder) BuildDeployment(cmhashes []HashHolder) (controllerutil.OperationResult, error) {
+func (s *Builder) buildDeployment(cmhashes []HashHolder) (controllerutil.OperationResult, error) {
 
 	for _, deploy := range s.DeploymentOrStatefulset {
-		deployment, err := deploy.MakeDeployment(cmhashes)
+		deployment, err := deploy.makeDeployment(cmhashes)
 		if err != nil {
 			return controllerutil.OperationResultNone, err
 		}
+
+		s.Put(deployment.GetName(), deployment.Kind)
 
 		deploy.DesiredState = deployment
 		deploy.CurrentState = &appsv1.Deployment{}
@@ -117,7 +130,7 @@ func (s *Builder) BuildDeployment(cmhashes []HashHolder) (controllerutil.Operati
 	return controllerutil.OperationResultNone, nil
 }
 
-func (s *Builder) BuildStatefulset(cmhashes []HashHolder) (controllerutil.OperationResult, error) {
+func (s *Builder) buildStatefulset(cmhashes []HashHolder) (controllerutil.OperationResult, error) {
 
 	for _, statefulset := range s.DeploymentOrStatefulset {
 		sts, err := statefulset.MakeStatefulSet(cmhashes)

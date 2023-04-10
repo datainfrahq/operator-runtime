@@ -13,6 +13,7 @@ type Builder struct {
 	Service                 BuilderService
 	Recorder                BuilderRecorder
 	Context                 BuilderContext
+	Store                   InternalStore
 }
 
 type CommonBuilder struct {
@@ -22,6 +23,7 @@ type CommonBuilder struct {
 	CrObject     client.Object
 	DesiredState client.Object
 	CurrentState client.Object
+	ObjectList   client.ObjectList
 	Labels       map[string]string
 }
 
