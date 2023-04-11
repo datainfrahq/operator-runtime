@@ -8,8 +8,7 @@ import (
 // ReconcileInterface holds all the methods to create operators
 type ReconcileInterface interface {
 	ReconcileConfigMap() (controllerutil.OperationResult, error)
-	ReconcileConfigMapHash() ([]builder.HashHolder, error)
-	ReconcileDeployOrSts(cmHashes []builder.HashHolder) (controllerutil.OperationResult, error)
+	ReconcileDeployOrSts() (controllerutil.OperationResult, error)
 	ReconcileStorage() (controllerutil.OperationResult, error)
 	ReconcileService() (controllerutil.OperationResult, error)
 	ReconcileStore() error

@@ -9,8 +9,7 @@ type Builder struct {
 	ConfigMaps              []BuilderConfigMap
 	DeploymentOrStatefulset []BuilderDeploymentStatefulSet
 	StorageConfig           []BuilderStorageConfig
-	ConfigHash              []BuilderConfigMapHash
-	Service                 BuilderService
+	Service                 []BuilderService
 	Recorder                BuilderRecorder
 	Context                 BuilderContext
 	Store                   InternalStore

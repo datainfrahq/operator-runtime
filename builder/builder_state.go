@@ -2,21 +2,18 @@ package builder
 
 import (
 	"context"
-	"crypto/sha1"
-	"encoding/base64"
-	"encoding/json"
 
+	"github.com/datainfrahq/operator-builder/utils"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
 func (b *CommonBuilder) CreateOrUpdate(ctx context.Context, buildRecorder BuilderRecorder) (controllerutil.OperationResult, error) {
 	addOwnerRefToObject(b.DesiredState, b.OwnerRef)
-	addHashToObject(b.DesiredState, b.OwnerRef.Kind+"OperatorHash")
+	utils.AddHashToObject(b.DesiredState, b.OwnerRef.Kind+"OperatorHash")
 	if err := b.Client.Get(ctx, types.NamespacedName{Name: b.DesiredState.GetName(), Namespace: b.DesiredState.GetNamespace()}, b.CurrentState); err != nil {
 		if apierrors.IsNotFound(err) {
 			result, err := b.Create(ctx, buildRecorder)
@@ -52,27 +49,4 @@ func addOwnerRefToObject(obj metav1.Object, ownerRef metav1.OwnerReference) {
 		Controller: &trueVar,
 	}
 	obj.SetOwnerReferences(append(obj.GetOwnerReferences(), ownerRef))
-}
-
-func addHashToObject(obj client.Object, name string) error {
-	if sha, err := getObjectHash(obj); err != nil {
-		return err
-	} else {
-		annotations := obj.GetAnnotations()
-		if annotations == nil {
-			annotations = make(map[string]string)
-			obj.SetAnnotations(annotations)
-		}
-		annotations[name] = sha
-		return nil
-	}
-}
-
-func getObjectHash(obj client.Object) (string, error) {
-	if bytes, err := json.Marshal(obj); err != nil {
-		return "", err
-	} else {
-		sha1Bytes := sha1.Sum(bytes)
-		return base64.StdEncoding.EncodeToString(sha1Bytes[:]), nil
-	}
 }
