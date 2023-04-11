@@ -12,7 +12,7 @@ type BuilderService struct {
 	CommonBuilder
 }
 
-func ToNewBuilderService(builder BuilderService) func(*Builder) {
+func ToNewBuilderService(builder []BuilderService) func(*Builder) {
 	return func(s *Builder) {
 		s.Service = builder
 	}
@@ -20,16 +20,20 @@ func ToNewBuilderService(builder BuilderService) func(*Builder) {
 
 func (s *Builder) ReconcileService() (controllerutil.OperationResult, error) {
 
-	svc := s.Service.makeService()
+	var err error
+	var result controllerutil.OperationResult
 
-	s.Service.DesiredState = svc
-	s.Service.CurrentState = &v1.Service{}
+	for _, svc := range s.Service {
+		makeSvc := svc.makeService()
 
-	result, err := s.Service.CreateOrUpdate(s.Context.Context, s.Recorder)
-	if err != nil {
-		return controllerutil.OperationResultNone, nil
+		svc.DesiredState = makeSvc
+		svc.CurrentState = &v1.Service{}
+
+		result, err = svc.CreateOrUpdate(s.Context.Context, s.Recorder)
+		if err != nil {
+			return controllerutil.OperationResultNone, nil
+		}
 	}
-
 	return result, nil
 }
 
