@@ -35,9 +35,8 @@ func (s *Builder) ReconcileConfigMap() (controllerutil.OperationResult, error) {
 
 		result, err = configMap.CreateOrUpdate(s.Context.Context, s.Recorder)
 		if err != nil {
-			return controllerutil.OperationResultNone, nil
+			return result, nil
 		}
-
 	}
 
 	return result, nil
