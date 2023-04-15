@@ -3,7 +3,7 @@ package builder
 import (
 	"context"
 
-	"github.com/datainfrahq/operator-builder/utils"
+	"github.com/datainfrahq/operator-runtime/utils"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
