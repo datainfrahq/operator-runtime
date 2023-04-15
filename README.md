@@ -1,7 +1,7 @@
 # Operator-Runtime
 
-![Build Status](https://github.com/datainfrahq/operator-builder/actions/workflows/go.yml/badge.svg) [![Slack](https://img.shields.io/badge/slack-brightgreen.svg?logo=slack&label=Community&style=flat&color=%2373DC8C&)](https://launchpass.com/datainfra-workspace)
-[![Go Reference](https://pkg.go.dev/badge/github.com/datainfrahq/operator-builder.svg)](https://pkg.go.dev/github.com/datainfrahq/operator-builder)
+![Build Status](https://github.com/datainfrahq/operator-runtime/actions/workflows/go.yml/badge.svg) [![Slack](https://img.shields.io/badge/slack-brightgreen.svg?logo=slack&label=Community&style=flat&color=%2373DC8C&)](https://launchpass.com/datainfra-workspace)
+[![Go Reference](https://pkg.go.dev/badge/github.com/datainfrahq/operator-runtime.svg)](https://pkg.go.dev/github.com/datainfrahq/operator-runtime)
 ![GitHub issues](https://img.shields.io/github/issues/datainfrahq/operator-runtime) [![Go Report Card](https://goreportcard.com/badge/github.com/datainfrahq/operator-runtime)](https://goreportcard.com/report/github.com/datainfrahq/operator-runtime)
 
 
