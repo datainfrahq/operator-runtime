@@ -38,12 +38,15 @@ func (s *Builder) ReconcileDeployOrSts() (controllerutil.OperationResult, error)
 			}
 
 			if deployorsts.CrObject.GetGeneration() > 1 {
-				done, err := deployorsts.isObjFullyDeployed(s.Context.Context, s.Recorder)
+				deployorsts.CurrentState = &appsv1.Deployment{}
+				done, _ := deployorsts.isObjFullyDeployed(s.Context.Context, s.Recorder)
 				if !done {
-					return controllerutil.OperationResultNone, err
+					break
 				}
 			}
 		} else if deployorsts.Kind == "Statefulset" {
+			deployorsts.CurrentState = &appsv1.StatefulSet{}
+
 			result, err := s.buildStatefulset(deployorsts)
 			if err != nil {
 				return controllerutil.OperationResultNone, err
@@ -53,9 +56,9 @@ func (s *Builder) ReconcileDeployOrSts() (controllerutil.OperationResult, error)
 			}
 
 			if deployorsts.CrObject.GetGeneration() > 1 {
-				done, err := deployorsts.isObjFullyDeployed(s.Context.Context, s.Recorder)
+				done, _ := deployorsts.isObjFullyDeployed(s.Context.Context, s.Recorder)
 				if !done {
-					return controllerutil.OperationResultNone, err
+					break
 				}
 			}
 		}
