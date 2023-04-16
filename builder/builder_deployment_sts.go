@@ -26,12 +26,12 @@ func (s *Builder) ReconcileDeployOrSts() (controllerutil.OperationResult, error)
 	for _, deployorsts := range s.DeploymentOrStatefulset {
 
 		if deployorsts.Kind == "Deployment" {
-			_, err := s.buildDeployment()
+			_, err := s.buildDeployment(deployorsts)
 			if err != nil {
 				return controllerutil.OperationResultNone, err
 			}
 		} else if deployorsts.Kind == "Statefulset" {
-			_, err := s.buildStatefulset()
+			_, err := s.buildStatefulset(deployorsts)
 			if err != nil {
 				return controllerutil.OperationResultNone, err
 			}
@@ -88,42 +88,40 @@ func (b BuilderDeploymentStatefulSet) MakeStatefulSet() (*appsv1.StatefulSet, er
 	}, nil
 }
 
-func (s *Builder) buildDeployment() (controllerutil.OperationResult, error) {
+func (s *Builder) buildDeployment(deploy BuilderDeploymentStatefulSet) (controllerutil.OperationResult, error) {
 
-	for _, deploy := range s.DeploymentOrStatefulset {
-		deployment, err := deploy.makeDeployment()
-		if err != nil {
-			return controllerutil.OperationResultNone, err
-		}
-
-		s.Put(deployment.GetName(), deployment.Kind)
-
-		deploy.DesiredState = deployment
-		deploy.CurrentState = &appsv1.Deployment{}
-
-		_, err = deploy.CreateOrUpdate(s.Context.Context, s.Recorder)
-		if err != nil {
-			return controllerutil.OperationResultNone, err
-		}
+	deployment, err := deploy.makeDeployment()
+	if err != nil {
+		return controllerutil.OperationResultNone, err
 	}
+
+	s.Put(deployment.GetName(), deployment.Kind)
+
+	deploy.DesiredState = deployment
+	deploy.CurrentState = &appsv1.Deployment{}
+
+	_, err = deploy.CreateOrUpdate(s.Context.Context, s.Recorder)
+	if err != nil {
+		return controllerutil.OperationResultNone, err
+	}
+
 	return controllerutil.OperationResultNone, nil
 }
 
-func (s *Builder) buildStatefulset() (controllerutil.OperationResult, error) {
+func (s *Builder) buildStatefulset(statefulset BuilderDeploymentStatefulSet) (controllerutil.OperationResult, error) {
 
-	for _, statefulset := range s.DeploymentOrStatefulset {
-		sts, err := statefulset.MakeStatefulSet()
-		if err != nil {
-			return controllerutil.OperationResultNone, err
-		}
-
-		statefulset.DesiredState = sts
-		statefulset.CurrentState = &appsv1.StatefulSet{}
-
-		_, err = statefulset.CreateOrUpdate(s.Context.Context, s.Recorder)
-		if err != nil {
-			return controllerutil.OperationResultNone, err
-		}
+	sts, err := statefulset.MakeStatefulSet()
+	if err != nil {
+		return controllerutil.OperationResultNone, err
 	}
+
+	statefulset.DesiredState = sts
+	statefulset.CurrentState = &appsv1.StatefulSet{}
+
+	_, err = statefulset.CreateOrUpdate(s.Context.Context, s.Recorder)
+	if err != nil {
+		return controllerutil.OperationResultNone, err
+	}
+
 	return controllerutil.OperationResultNone, nil
 }
