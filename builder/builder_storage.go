@@ -39,23 +39,6 @@ func (s *Builder) ReconcileStorage() (controllerutil.OperationResult, error) {
 	return controllerutil.OperationResultNone, nil
 }
 
-func (s *Builder) MakeVolumeClaimTemplates() []v1.PersistentVolumeClaim {
-
-	var pvcs []v1.PersistentVolumeClaim
-	for _, storage := range s.StorageConfig {
-
-		pvc, err := storage.MakePvc()
-		if err != nil {
-			return []v1.PersistentVolumeClaim{}
-		}
-
-		pvcs = append(pvcs, *pvc)
-
-	}
-
-	return pvcs
-}
-
 func (b *BuilderStorageConfig) MakePvc() (*v1.PersistentVolumeClaim, error) {
 	return &v1.PersistentVolumeClaim{
 		TypeMeta: metav1.TypeMeta{
