@@ -17,21 +17,24 @@ func ToNewBuilderService(builder []BuilderService) func(*Builder) {
 		s.Service = builder
 	}
 }
-
 func (s *Builder) ReconcileService() (controllerutil.OperationResult, error) {
 
 	var err error
 	var result controllerutil.OperationResult
 
 	for _, svc := range s.Service {
-		makeSvc := svc.makeService()
 
-		svc.DesiredState = makeSvc
-		svc.CurrentState = &v1.Service{}
+		if svc.ServiceSpec != nil {
 
-		result, err = svc.CreateOrUpdate(s.Context.Context, s.Recorder)
-		if err != nil {
-			return controllerutil.OperationResultNone, nil
+			makeSvc := svc.makeService()
+
+			svc.DesiredState = makeSvc
+			svc.CurrentState = &v1.Service{}
+
+			result, err = svc.CreateOrUpdate(s.Context.Context, s.Recorder)
+			if err != nil {
+				return controllerutil.OperationResultNone, nil
+			}
 		}
 	}
 	return result, nil
