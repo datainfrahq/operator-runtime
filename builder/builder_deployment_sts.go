@@ -173,7 +173,7 @@ func (s *Builder) buildStatefulset(statefulset BuilderDeploymentStatefulSet) (co
 		return controllerutil.OperationResultNone, err
 	}
 
-	sts.Spec.VolumeClaimTemplates = s.MakeVolumeClaimTemplates()
+	sts.Spec.VolumeClaimTemplates = statefulset.MakeVolumeClaimTemplates()
 
 	statefulset.DesiredState = sts
 	statefulset.CurrentState = &appsv1.StatefulSet{}
@@ -184,4 +184,21 @@ func (s *Builder) buildStatefulset(statefulset BuilderDeploymentStatefulSet) (co
 	}
 
 	return controllerutil.OperationResultNone, nil
+}
+
+func (b *BuilderDeploymentStatefulSet) MakeVolumeClaimTemplates() []v1.PersistentVolumeClaim {
+
+	var pvcs []v1.PersistentVolumeClaim
+	for _, storage := range b.VolumeClaimTemplate {
+
+		pvc, err := storage.MakePvc()
+		if err != nil {
+			return []v1.PersistentVolumeClaim{}
+		}
+
+		pvcs = append(pvcs, *pvc)
+
+	}
+
+	return pvcs
 }
