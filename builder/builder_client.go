@@ -30,7 +30,7 @@ func (b *CommonBuilder) Update(ctx context.Context, buildRecorder BuilderRecorde
 }
 
 func (b *CommonBuilder) Get(ctx context.Context, buildRecorder BuilderRecorder) (client.Object, error) {
-	if err := b.Client.Get(ctx, *namespacedName(b.DesiredState.GetName(), b.ObjectMeta.Namespace), b.CurrentState); err != nil {
+        if err := b.Client.Get(ctx, *namespacedName(b.ObjectMeta.GetName(), b.ObjectMeta.Namespace), b.CurrentState); err != nil {
 		return nil, err
 	} else {
 		return b.CurrentState, nil
