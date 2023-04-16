@@ -11,10 +11,11 @@ import (
 )
 
 type BuilderDeploymentStatefulSet struct {
-	Replicas int32
-	Labels   map[string]string
-	PodSpec  *v1.PodSpec
-	Kind     string
+	Replicas            int32
+	Labels              map[string]string
+	VolumeClaimTemplate []BuilderStorageConfig
+	PodSpec             *v1.PodSpec
+	Kind                string
 	CommonBuilder
 }
 
@@ -122,7 +123,7 @@ func (b *BuilderDeploymentStatefulSet) makeDeployment() (*appsv1.Deployment, err
 	}, nil
 }
 
-func (b BuilderDeploymentStatefulSet) MakeStatefulSet() (*appsv1.StatefulSet, error) {
+func (b *BuilderDeploymentStatefulSet) MakeStatefulSet() (*appsv1.StatefulSet, error) {
 
 	return &appsv1.StatefulSet{
 		TypeMeta: metav1.TypeMeta{
@@ -171,6 +172,8 @@ func (s *Builder) buildStatefulset(statefulset BuilderDeploymentStatefulSet) (co
 	if err != nil {
 		return controllerutil.OperationResultNone, err
 	}
+
+	sts.Spec.VolumeClaimTemplates = s.MakeVolumeClaimTemplates()
 
 	statefulset.DesiredState = sts
 	statefulset.CurrentState = &appsv1.StatefulSet{}
