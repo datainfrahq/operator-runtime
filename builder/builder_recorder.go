@@ -52,6 +52,16 @@ func (b *BuilderRecorder) updateEvent(crObj client.Object, obj client.Object, er
 	}
 }
 
+func (b *BuilderRecorder) getEvent(crObj client.Object, obj client.Object, err error) {
+	if err != nil {
+		b.Recorder.Event(
+			crObj,
+			v1.EventTypeWarning,
+			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
+			b.ControllerName+"GetObjectFail")
+	}
+}
+
 func (b *BuilderRecorder) listEvent(crObj client.Object, obj client.Object, err error) {
 	if err != nil {
 		b.Recorder.Event(

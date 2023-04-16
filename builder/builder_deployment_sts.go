@@ -1,6 +1,9 @@
 package builder
 
 import (
+	"context"
+	"errors"
+
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,18 +29,69 @@ func (s *Builder) ReconcileDeployOrSts() (controllerutil.OperationResult, error)
 	for _, deployorsts := range s.DeploymentOrStatefulset {
 
 		if deployorsts.Kind == "Deployment" {
-			_, err := s.buildDeployment(deployorsts)
+			result, err := s.buildDeployment(deployorsts)
 			if err != nil {
 				return controllerutil.OperationResultNone, err
 			}
+			if result == controllerutil.OperationResultUpdated {
+				return controllerutil.OperationResultNone, nil
+			}
+
+			if deployorsts.CrObject.GetGeneration() > 1 {
+				done, err := deployorsts.isObjFullyDeployed(s.Context.Context, s.Recorder)
+				if !done {
+					return controllerutil.OperationResultNone, err
+				}
+			}
 		} else if deployorsts.Kind == "Statefulset" {
-			_, err := s.buildStatefulset(deployorsts)
+			result, err := s.buildStatefulset(deployorsts)
 			if err != nil {
 				return controllerutil.OperationResultNone, err
+			}
+			if result == controllerutil.OperationResultUpdated {
+				return controllerutil.OperationResultNone, nil
+			}
+
+			if deployorsts.CrObject.GetGeneration() > 1 {
+				done, err := deployorsts.isObjFullyDeployed(s.Context.Context, s.Recorder)
+				if !done {
+					return controllerutil.OperationResultNone, err
+				}
 			}
 		}
 	}
 	return controllerutil.OperationResultNone, nil
+}
+
+func (b *CommonBuilder) isObjFullyDeployed(ctx context.Context, recorder BuilderRecorder) (bool, error) {
+
+	// Get Object
+	obj, err := b.Get(ctx, recorder)
+	if err != nil {
+		return false, err
+	}
+
+	if detectType(obj) == "*v1.StatefulSet" {
+		if obj.(*appsv1.StatefulSet).Status.CurrentRevision != obj.(*appsv1.StatefulSet).Status.UpdateRevision {
+			return false, nil
+		} else if obj.(*appsv1.StatefulSet).Status.CurrentReplicas != obj.(*appsv1.StatefulSet).Status.ReadyReplicas {
+			return false, nil
+		} else {
+			return obj.(*appsv1.StatefulSet).Status.CurrentRevision == obj.(*appsv1.StatefulSet).Status.UpdateRevision, nil
+		}
+	} else if detectType(obj) == "*v1.Deployment" {
+		for _, condition := range obj.(*appsv1.Deployment).Status.Conditions {
+			// This detects a failure condition, operator should send a rolling deployment failed event
+			if condition.Type == appsv1.DeploymentReplicaFailure {
+				return false, errors.New(condition.Reason)
+			} else if condition.Type == appsv1.DeploymentProgressing && condition.Status != v1.ConditionTrue || obj.(*appsv1.Deployment).Status.ReadyReplicas != obj.(*appsv1.Deployment).Status.Replicas {
+				return false, nil
+			} else {
+				return obj.(*appsv1.Deployment).Status.ReadyReplicas == obj.(*appsv1.Deployment).Status.Replicas, nil
+			}
+		}
+	}
+	return false, nil
 }
 
 func (b *BuilderDeploymentStatefulSet) makeDeployment() (*appsv1.Deployment, error) {
@@ -100,12 +154,12 @@ func (s *Builder) buildDeployment(deploy BuilderDeploymentStatefulSet) (controll
 	deploy.DesiredState = deployment
 	deploy.CurrentState = &appsv1.Deployment{}
 
-	_, err = deploy.CreateOrUpdate(s.Context.Context, s.Recorder)
+	result, err := deploy.CreateOrUpdate(s.Context.Context, s.Recorder)
 	if err != nil {
 		return controllerutil.OperationResultNone, err
 	}
 
-	return controllerutil.OperationResultNone, nil
+	return result, nil
 }
 
 func (s *Builder) buildStatefulset(statefulset BuilderDeploymentStatefulSet) (controllerutil.OperationResult, error) {
