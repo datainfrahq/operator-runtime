@@ -1,6 +1,10 @@
-<h1 align="center">
-operator runtime
-</h1>
+<h2 align="center">
+  <picture>
+    <img alt="DataInfra Logo" src="https://raw.githubusercontent.com/datainfrahq/.github/main/images/logo.svg">
+  </picture>
+  <br>
+  Operator Runtime
+</h2>
 
 
 <div align="center">
