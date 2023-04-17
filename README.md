@@ -1,6 +1,6 @@
-<h2 align="center">
+<h1 align="center">
 operator runtime
-</h2>
+</h1>
 
 
 <div align="center">
@@ -11,14 +11,17 @@ operator runtime
 
 </div>
 
-## Introduction
-- Operator builder is a library to build kubernetes operators which adhere to [dsoi-spec](https://github.com/datainfrahq/dsoi-spec).
-- The library provides users with high level abstractions and standardisation to focus on building robust reconcile loops for data application with multiple node types.
+Operator runtime is a library to build kubernetes operators which adhere to [Dsoi-Spec](https://github.com/datainfrahq/dsoi-spec). This library provides  high level abstractions and standardisation to focus on building robust reconcile loops for data application with multiple node types. 
+Operator's built using operator runtime
+- [Pinot Kubernetes Operator](https://github.com/datainfrahq/pinot-operator)
+- [Parseable Kubernetes Operator](https://github.com/parseablehq/operator)
 
-## Motivation
+## :dart: Motivation
 
-- At datainfra, we are building cloud native data infrastructure toolings to power self served data platforms, we build a lot of kubernetes operator's for various large distributed systems. Building reconcile loops for different nodetypes/components in a distributed systems is extremely time consuming, error prone and becomes repetitive for mulitple applications. 
+- At DataInfra, we are building cloud native data infrastructure toolings to power self served data platforms, we build a lot of kubernetes operator's for distributed systems. Building reconcile loops for different nodetypes/components is extremely time consuming, error prone and becomes repetitive for mulitple applications. There arn't any useful abstractions which can be consumed by the reconcilation loops, while building operator's we wanted to focus on application building blocks, using the operator runtime we abstracted out the underlying k8s object reconcilation internals.
+
 Using this library we introduce standardisation across 
+
     1. Builder Abstractions to build kubernetes objects and reconcile.
     2. Triggering Reconcilation on state changes using hashes.
     3. Building an internal store for reducing k8s API calls.
@@ -34,14 +37,13 @@ Using this library we introduce standardisation across
 ```
   // construct builder
 	builder := builder.NewBuilder(
-		builder.ToNewBuilderConfigMap(configMap),
-		builder.ToNewBuilderConfigMapHash(configMapHash),
-		builder.ToNewBuilderDeploymentStatefulSet(deploymentOrStatefulset),
-		builder.ToNewBuilderStorageConfig(storage),
-		builder.ToNewBuilderRecorder(builder.BuilderRecorder{Recorder: r.Recorder, ControllerName: "ParseableOperator"}),
+		builder.ToNewBuilderConfigMap(pinotConfigMap),
+		builder.ToNewBuilderDeploymentStatefulSet(pinotDeploymentOrStatefulset),
+		builder.ToNewBuilderStorageConfig(pinotStorage),
+		builder.ToNewBuilderRecorder(builder.BuilderRecorder{Recorder: r.Recorder, ControllerName: "pinotOperator"}),
 		builder.ToNewBuilderContext(builder.BuilderContext{Context: ctx}),
-		builder.ToNewBuilderService(service),
-		builder.ToNewBuilderStore(*builder.NewStore(r.client, r.commonLabels, cr.Namespace, cr)),
+		builder.ToNewBuilderService(pinotService),
+		builder.ToNewBuilderStore(*builder.NewStore(ib.client, ib.commonLabels, pt.Namespace, pt)),
 	)
 ```
 - The library makes configmap hashes and passes them as env to deployment and sts objects, which force trigger rollout of pods when the intenral k8s client updates objects.
@@ -50,13 +52,13 @@ Using this library we introduce standardisation across
 - once builder is constructed, the ```ReconcileInterface``` can be called in the build and reoncile objects
 ```
   // reconcile configmap
-	_, err := builder.ReconcileConfigMap()
+	result, err := builder.ReconcileConfigMap()
 	if err != nil {
 		return err
 	}
 
 ```
-### Interal Store
+### Internal Store
 - Reconcile store
 ```
 if err := builder.ReconcileStore(); err != nil {
@@ -71,3 +73,4 @@ type InternalStore struct {
 	CommonBuilder
 }
 ```
+
