@@ -14,6 +14,7 @@ type BuilderDeploymentStatefulSet struct {
 	Replicas            int32
 	Labels              map[string]string
 	VolumeClaimTemplate []BuilderStorageConfig
+	ServiceName         string
 	PodSpec             *v1.PodSpec
 	Kind                string
 	CommonBuilder
@@ -136,6 +137,7 @@ func (b *BuilderDeploymentStatefulSet) MakeStatefulSet() (*appsv1.StatefulSet, e
 			Selector: &metav1.LabelSelector{
 				MatchLabels: b.Labels,
 			},
+			ServiceName: b.ServiceName,
 			Template: v1.PodTemplateSpec{
 				Spec: *b.PodSpec,
 				ObjectMeta: metav1.ObjectMeta{
