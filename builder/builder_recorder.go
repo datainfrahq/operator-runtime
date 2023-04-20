@@ -20,12 +20,21 @@ func ToNewBuilderRecorder(builder BuilderRecorder) func(*Builder) {
 	}
 }
 
+func (b *BuilderRecorder) GenericEvent(crObj client.Object, reason, message string) {
+	b.Recorder.Event(
+		crObj,
+		v1.EventTypeWarning,
+		reason,
+		message,
+	)
+}
+
 func (b *BuilderRecorder) createEvent(crObj client.Object, obj client.Object, err error) {
 	if err != nil {
 		b.Recorder.Event(
 			crObj,
 			v1.EventTypeWarning,
-			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
+			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s], Err [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj), err.Error()),
 			b.ControllerName+"CreateObjectFail")
 	} else {
 		b.Recorder.Event(
@@ -41,7 +50,7 @@ func (b *BuilderRecorder) updateEvent(crObj client.Object, obj client.Object, er
 		b.Recorder.Event(
 			crObj,
 			v1.EventTypeWarning,
-			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
+			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s], Err [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj), err.Error()),
 			b.ControllerName+"UpdateObjectFail")
 	} else {
 		b.Recorder.Event(
@@ -57,7 +66,7 @@ func (b *BuilderRecorder) getEvent(crObj client.Object, obj client.Object, err e
 		b.Recorder.Event(
 			crObj,
 			v1.EventTypeWarning,
-			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
+			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s], Error [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj), err.Error()),
 			b.ControllerName+"GetObjectFail")
 	}
 }
@@ -67,7 +76,7 @@ func (b *BuilderRecorder) listEvent(crObj client.Object, obj client.Object, err 
 		b.Recorder.Event(
 			crObj,
 			v1.EventTypeWarning,
-			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
+			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s], Error [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj), err.Error()),
 			b.ControllerName+"ListObjectFail")
 	}
 }
@@ -77,7 +86,7 @@ func (b *BuilderRecorder) deleteEvent(crObj client.Object, obj client.Object, er
 		b.Recorder.Event(
 			crObj,
 			v1.EventTypeWarning,
-			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj)),
+			fmt.Sprintf("Name [%s], Namespace [%s], Kind [%s], Error [%s]", obj.GetName(), obj.GetNamespace(), detectType(obj), err.Error()),
 			b.ControllerName+"DeleteObjectFail")
 	} else {
 		b.Recorder.Event(
