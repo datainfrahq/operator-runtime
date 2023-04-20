@@ -20,10 +20,10 @@ func ToNewBuilderRecorder(builder BuilderRecorder) func(*Builder) {
 	}
 }
 
-func (b *BuilderRecorder) GenericEvent(crObj client.Object, reason, message string) {
+func (b *BuilderRecorder) GenericEvent(crObj client.Object, eventType, reason, message string) {
 	b.Recorder.Event(
 		crObj,
-		v1.EventTypeWarning,
+		eventType,
 		reason,
 		message,
 	)
