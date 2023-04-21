@@ -22,7 +22,7 @@ Operator's built using operator runtime
 
 ## :dart: Motivation
 
-- At DataInfra, we are building cloud native data infrastructure toolings to power self served data platforms, we build a lot of kubernetes operator's for distributed systems. Building reconcile loops for different nodetypes/components is extremely time consuming, error prone and becomes repetitive for mulitple applications. There arn't any useful abstractions which can be consumed by the reconcilation loops, while building operator's we wanted to focus on application building blocks, using the operator runtime we abstracted out the underlying k8s object reconcilation internals.
+- At DataInfra, we are building data centric control planes to power self served data platforms, we build a lot of kubernetes operator's for distributed systems. Building reconcile loops for different nodetypes/components is extremely time consuming, error prone and becomes repetitive for mulitple applications. There arn't any useful abstractions which can be consumed by the reconcilation loops, while building operator's we wanted to focus on application building blocks, using the operator runtime we abstracted out the underlying k8s object reconcilation internals.
 
 Using this library we introduce standardisation across 
 
