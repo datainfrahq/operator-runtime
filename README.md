@@ -17,8 +17,8 @@
 
 Operator runtime is a library to build kubernetes operators which adhere to [Dsoi-Spec](https://github.com/datainfrahq/dsoi-spec). This library provides  high level abstractions and standardisation to focus on building robust reconcile loops for data application with multiple node types. 
 Operator's built using operator runtime
-- [Pinot Kubernetes Operator](https://github.com/datainfrahq/pinot-operator)
-- [Parseable Kubernetes Operator](https://github.com/parseablehq/operator)
+- [Control Plane For Apache Pinot On Kubernetes](https://github.com/datainfrahq/pinot-control-plane-k8s)
+- [Control Plane For Parseable on Kubernetes Operator](https://github.com/parseablehq/operator)
 
 ## :dart: Motivation
 
