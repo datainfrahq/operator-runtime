@@ -12,7 +12,7 @@ import (
 
 type Predicates interface {
 	IgnoreNamespacePredicate(obj client.Object) bool
-	IgnoreIgnoredObjectPredicate(obj client.Object) bool
+	IgnoreObjectPredicate(obj client.Object) bool
 	IgnoreUpdate(e event.UpdateEvent) bool
 }
 
@@ -67,7 +67,7 @@ func (c *CommonPredicates) IgnoreNamespacePredicate(obj client.Object) bool {
 //
 // This function should be called within the create or update predicate to ensure that the namespaces with the
 // ignore annotation are properly filtered before reconciliation takes place.
-func (c *CommonPredicates) IgnoreIgnoredObjectPredicate(obj client.Object) bool {
+func (c *CommonPredicates) IgnoreObjectPredicate(obj client.Object) bool {
 	var log = c.Log.WithName("predicates")
 
 	if ignoredStatus := obj.GetAnnotations()[c.IgnoreAnnotation]; ignoredStatus == "true" {
