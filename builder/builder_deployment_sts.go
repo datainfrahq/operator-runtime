@@ -180,12 +180,12 @@ func (s *Builder) buildStatefulset(statefulset BuilderDeploymentStatefulSet) (co
 	statefulset.DesiredState = sts
 	statefulset.CurrentState = &appsv1.StatefulSet{}
 
-	_, err = statefulset.CreateOrUpdate(s.Context.Context, s.Recorder)
+	result, err := statefulset.CreateOrUpdate(s.Context.Context, s.Recorder)
 	if err != nil {
 		return controllerutil.OperationResultNone, err
 	}
 
-	return controllerutil.OperationResultNone, nil
+	return result, nil
 }
 
 func (b *BuilderDeploymentStatefulSet) MakeVolumeClaimTemplates() []v1.PersistentVolumeClaim {
