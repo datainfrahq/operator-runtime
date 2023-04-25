@@ -3,7 +3,6 @@ package builder
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -31,7 +30,6 @@ func (s *Builder) ReconcileDeployOrSts() (controllerutil.OperationResult, error)
 
 	for _, deployorsts := range s.DeploymentOrStatefulset {
 
-		fmt.Println(deployorsts.ObjectMeta.Name)
 		if deployorsts.Kind == "Deployment" {
 			result, err := s.buildDeployment(deployorsts)
 			if err != nil {
