@@ -3,6 +3,7 @@ package builder
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -30,6 +31,7 @@ func (s *Builder) ReconcileDeployOrSts() (controllerutil.OperationResult, error)
 
 	for _, deployorsts := range s.DeploymentOrStatefulset {
 
+		fmt.Println(deployorsts.ObjectMeta.Name)
 		if deployorsts.Kind == "Deployment" {
 			result, err := s.buildDeployment(deployorsts)
 			if err != nil {
@@ -180,12 +182,12 @@ func (s *Builder) buildStatefulset(statefulset BuilderDeploymentStatefulSet) (co
 	statefulset.DesiredState = sts
 	statefulset.CurrentState = &appsv1.StatefulSet{}
 
-	_, err = statefulset.CreateOrUpdate(s.Context.Context, s.Recorder)
+	result, err := statefulset.CreateOrUpdate(s.Context.Context, s.Recorder)
 	if err != nil {
 		return controllerutil.OperationResultNone, err
 	}
 
-	return controllerutil.OperationResultNone, nil
+	return result, nil
 }
 
 func (b *BuilderDeploymentStatefulSet) MakeVolumeClaimTemplates() []v1.PersistentVolumeClaim {
