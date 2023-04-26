@@ -119,5 +119,5 @@ func makeOwnerRef(apiVersion, kind, name string, uid types.UID) *metav1.OwnerRef
 ## :stethoscope: Support
 
 - For questions and feedback please feel free to reach out to us on [Slack ↗︎](https://launchpass.com/datainfra-workspace).
-- For bugs, please create issue on [GitHub ↗︎](https://github.com/datainfrahq/pinot-control-plane-k8s/issues).
+- For bugs, please create issue on [GitHub ↗︎](https://github.com/datainfrahq/operator-runtime/issues).
 - For commercial support and consultation, please reach out to us at [`hi@datainfra.io` ↗︎](mailto:hi@datainfra.io).
