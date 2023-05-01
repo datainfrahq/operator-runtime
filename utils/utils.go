@@ -4,8 +4,15 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/json"
+	"os"
+	"time"
 
+	"github.com/go-logr/logr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+)
+
+const (
+	ReconcileWait string = "RECONCILE_WAIT"
 )
 
 type ConfigMapHash struct {
@@ -68,4 +75,19 @@ func unique[T comparable](s []T) []T {
 		}
 	}
 	return result
+}
+
+func LookupReconcileTime(log logr.Logger) time.Duration {
+	val, exists := os.LookupEnv(ReconcileWait)
+	if !exists {
+		return time.Second * 10
+	} else {
+		v, err := time.ParseDuration(val)
+		if err != nil {
+			log.Error(err, err.Error())
+			// Exit Program if not valid
+			os.Exit(1)
+		}
+		return v
+	}
 }
