@@ -8,7 +8,7 @@ import (
 )
 
 type BuilderNetworkPolicy struct {
-	NetworkPolicy *networkingv1.NetworkPolicy
+	NetworkPolicySpec *networkingv1.NetworkPolicySpec
 	CommonBuilder
 }
 
@@ -25,7 +25,7 @@ func (s *Builder) ReconcileNetworkPolicy() (controllerutil.OperationResult, erro
 
 	for _, np := range s.NetworkPolicy {
 
-		if np.NetworkPolicy != nil {
+		if np.NetworkPolicySpec != nil {
 
 			makeNp := np.makeNetworkPolicy()
 
@@ -48,7 +48,7 @@ func (b *BuilderNetworkPolicy) makeNetworkPolicy() *networkingv1.NetworkPolicy {
 			Kind:       "NetworkPolicy",
 		},
 		ObjectMeta: b.ObjectMeta,
-		Spec:       *&b.NetworkPolicy.Spec,
+		Spec:       *b.NetworkPolicySpec,
 	}
 
 	return networkPolicy
