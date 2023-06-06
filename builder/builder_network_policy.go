@@ -12,9 +12,9 @@ type BuilderNetworkPolicy struct {
 	CommonBuilder
 }
 
-func ToNewBuilderNetworkPolicy(builder []BuilderService) func(*Builder) {
+func ToNewBuilderNetworkPolicy(builder []BuilderNetworkPolicy) func(*Builder) {
 	return func(s *Builder) {
-		s.Service = builder
+		s.NetworkPolicy = builder
 	}
 }
 
