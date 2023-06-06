@@ -11,6 +11,7 @@ type ReconcileInterface interface {
 	ReconcileDeployOrSts() (controllerutil.OperationResult, error)
 	ReconcileStorage() (controllerutil.OperationResult, error)
 	ReconcileService() (controllerutil.OperationResult, error)
+	ReconcileNetworkPolicy() (controllerutil.OperationResult, error)
 	ReconcileStore() error
 }
 
