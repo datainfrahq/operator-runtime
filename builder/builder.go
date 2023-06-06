@@ -10,6 +10,7 @@ type Builder struct {
 	DeploymentOrStatefulset []BuilderDeploymentStatefulSet
 	StorageConfig           []BuilderStorageConfig
 	Service                 []BuilderService
+	NetworkPolicy           []BuilderNetworkPolicy
 	Recorder                BuilderRecorder
 	Context                 BuilderContext
 	Store                   InternalStore
